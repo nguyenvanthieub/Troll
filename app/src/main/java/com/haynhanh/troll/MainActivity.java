@@ -40,6 +40,22 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Menu menu = navigationView.getMenu();
+
+        // Add items to the second group, and set to visible
+        menu.add(R.id.second_group, 1, 100, "Item 1");
+        menu.add(R.id.second_group, 2, 200, "Item 2");
+        menu.add(R.id.second_group, 3, 300, "Item 3");
+        menu.setGroupCheckable(R.id.second_group, true, true);
+        menu.setGroupVisible(R.id.second_group, true);
+
+        // Add items to the third group, and set to visible
+        menu.add(R.id.third_group, 4, 400, "Item 1");
+        menu.add(R.id.third_group, 5, 500, "Item 2");
+        menu.add(R.id.third_group, 6, 600, "Item 3");
+        menu.setGroupCheckable(R.id.third_group, true, true);
+        menu.setGroupVisible(R.id.third_group, true);
     }
 
     @Override
