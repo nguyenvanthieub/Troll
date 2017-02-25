@@ -1,29 +1,28 @@
 package com.haynhanh.troll;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import com.haynhanh.troll.adapter.DrawerAdapter;
-import com.haynhanh.troll.model.Domain;
-import com.haynhanh.troll.model.DomainDetail;
+import com.haynhanh.troll.model.domain.Domain;
+import com.haynhanh.troll.model.domain.DomainDetail;
+import com.haynhanh.troll.model.item.Item;
+import com.haynhanh.troll.model.item.ItemDetail;
 import com.haynhanh.troll.network.ApiUtil;
-import com.haynhanh.troll.network.MyApiEndpointInterface;
+import com.haynhanh.troll.network.MyApi;
 import com.haynhanh.troll.network.NetworkHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,12 +30,10 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MyApiEndpointInterface apiEndpointInterface = null;
+    private MyApi api = null;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private DrawerLayout drawerLayout;
+    private ListView drawerList;
     private DrawerAdapter drawerAdapter;
     private List<DomainDetail> domainDetailList;
 
@@ -44,25 +41,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, 0, 0);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
         domainDetailList = new ArrayList<>();
 
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, "Mao " + domainDetailList.get(position).getName(), Toast.LENGTH_SHORT).show();
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
                 }
             }
         });
@@ -72,23 +63,57 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (NetworkHelper.isOnline()) {
-            apiEndpointInterface = ApiUtil.getApiEndpointInterface();
-            apiEndpointInterface.getDomain().enqueue(new Callback<Domain>() {
+            api = ApiUtil.getApi();
+            api.getDomainList().enqueue(new Callback<Domain>() {
                 @Override
                 public void onResponse(Call<Domain> call, Response<Domain> response) {
-
-
                     domainDetailList = response.body().getData();
                     drawerAdapter = new DrawerAdapter(MainActivity.this, domainDetailList);
-                    mDrawerList.setAdapter(drawerAdapter);
+                    drawerList.setAdapter(drawerAdapter);
                 }
-
 
                 @Override
                 public void onFailure(Call<Domain> call, Throwable t) {}
             });
-        } else
+        } else {
             Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void clickHomeButton(View view) {
+        Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void clickListViewButton(View view) {
+        Toast.makeText(this, "List View", Toast.LENGTH_SHORT).show();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("domain_id", 1);
+        params.put("greater_id", 0);
+        params.put("less_id", 1000);
+        params.put("limit", 10);
+        params.put("mid_id", 2);
+        api = ApiUtil.getApi();
+        api.getItemList(params).enqueue(new Callback<Item>() {
+            @Override
+            public void onResponse(Call<Item> call, Response<Item> response) {
+                Log.e("Mao", "Mao " + response.body().getData());
+                List<ItemDetail> itemDetailList = new ArrayList<ItemDetail>();
+                itemDetailList = response.body().getData();
+                Log.e("Mao", "Mao " + itemDetailList.get(0).getTitle());
+                Log.e("Mao", "Mao " + itemDetailList.get(0).getParts().get(0).getUrl());
+            }
+
+            @Override
+            public void onFailure(Call<Item> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void clickGridViewButton(View view) {
+        Toast.makeText(this, "Grid View", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -101,26 +126,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        if (mDrawerToggle != null)
-            mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
 }

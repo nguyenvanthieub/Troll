@@ -12,10 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import com.haynhanh.troll.ImageFragment;
-import com.haynhanh.troll.MainActivity;
 import com.haynhanh.troll.R;
-import com.haynhanh.troll.model.DomainDetail;
+import com.haynhanh.troll.model.domain.DomainDetail;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -40,14 +38,6 @@ public class DrawerAdapter extends ArrayAdapter<DomainDetail> {
 
         Picasso.with(getContext()).load(getItem(position).getLogo()).error(R.drawable.ic_troll_face).into(icon);
         name.setText(getItem(position).getName());
-
-//        convertView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int domainId = getItem(position).getId();
-//                ((MainActivity) getContext()).getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, ImageFragment.getInstance(domainId));
-//            }
-//        });
 
         return convertView;
     }

@@ -7,10 +7,6 @@ import android.net.NetworkInfo;
 
 import java.io.IOException;
 
-/**
- * Created by peter on 2/19/17.
- */
-
 public class NetworkHelper {
 
     public static Boolean isNetworkAvailable(Context context) {
