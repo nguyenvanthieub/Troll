@@ -1,20 +1,36 @@
 package com.haynhanh.troll;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+
+import com.haynhanh.troll.adapter.DrawerAdapter;
+import com.haynhanh.troll.model.Domain;
+import com.haynhanh.troll.network.ApiUtil;
+import com.haynhanh.troll.network.MyApiEndpointInterface;
+import com.haynhanh.troll.network.NetworkHelper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity {
+
+    private MyApiEndpointInterface apiEndpointInterface = null;
+
+
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,40 +38,32 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (NetworkHelper.isOnline()) {
+            apiEndpointInterface = ApiUtil.getApiEndpointInterface();
+            apiEndpointInterface.getDomain().enqueue(new Callback<Domain>() {
+                @Override
+                public void onResponse(Call<Domain> call, Response<Domain> response) {
+                    mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    mDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, 0, 0);
+                    mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(true);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+                    mDrawerList = (ListView) findViewById(R.id.left_drawer);
+                    mDrawerList.setAdapter(new DrawerAdapter(MainActivity.this, response.body().getData()));
+                }
 
-        Menu menu = navigationView.getMenu();
-
-        // Add items to the second group, and set to visible
-        menu.add(R.id.second_group, 1, 100, "Item 1");
-        menu.add(R.id.second_group, 2, 200, "Item 2");
-        menu.add(R.id.second_group, 3, 300, "Item 3");
-        menu.setGroupCheckable(R.id.second_group, true, true);
-        menu.setGroupVisible(R.id.second_group, true);
-
-        // Add items to the third group, and set to visible
-        menu.add(R.id.third_group, 4, 400, "Item 1");
-        menu.add(R.id.third_group, 5, 500, "Item 2");
-        menu.add(R.id.third_group, 6, 600, "Item 3");
-        menu.setGroupCheckable(R.id.third_group, true, true);
-        menu.setGroupVisible(R.id.third_group, true);
+                @Override
+                public void onFailure(Call<Domain> call, Throwable t) {}
+            });
+        } else
+            Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -69,49 +77,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        if (mDrawerToggle != null)
+            mDrawerToggle.syncState();
+    }
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }
