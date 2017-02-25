@@ -36,17 +36,21 @@
             android:layout_height="50dp">
             <Button
                 android:layout_weight="1"
-                android:onClick="clickListViewButton"
-                android:text="List View"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <Button
-                android:layout_weight="1"
                 android:onClick="clickGridViewButton"
                 android:text="Grid View"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+            <Button
+                android:layout_weight="1"
+                android:onClick="clickListViewButton"
+                android:text="List View"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
