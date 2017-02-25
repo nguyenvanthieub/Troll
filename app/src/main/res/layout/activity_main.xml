@@ -8,15 +8,44 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@color/colorToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <Button
+                android:text="Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            <TextView
+                android:text="Troll"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@color/colorSelectLayout"
+            android:layout_width="match_parent"
+            android:weightSum="2"
+            android:layout_height="50dp">
+            <Button
+                android:layout_weight="1"
+                android:text="List View"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <Button
+                android:layout_weight="1"
+                android:text="Grid View"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/frame_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/left_drawer"
@@ -27,4 +56,5 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
         android:background="@android:color/white"/>
+
 </android.support.v4.widget.DrawerLayout>
