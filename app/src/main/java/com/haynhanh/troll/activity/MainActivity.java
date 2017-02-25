@@ -1,4 +1,4 @@
-package com.haynhanh.troll;
+package com.haynhanh.troll.activity;
 
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -6,7 +6,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -14,7 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.haynhanh.troll.adapter.DrawerAdapter;
+import com.haynhanh.troll.R;
+import com.haynhanh.troll.adapter.SlidemenuAdapter;
 import com.haynhanh.troll.adapter.ItemAdapter;
 import com.haynhanh.troll.model.domain.Domain;
 import com.haynhanh.troll.model.domain.DomainDetail;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private DrawerAdapter drawerAdapter;
+    private SlidemenuAdapter drawerAdapter;
     private List<DomainDetail> domainDetailList;
 
     private RecyclerView recyclerView;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Domain> call, Response<Domain> response) {
                     domainDetailList = response.body().getData();
-                    drawerAdapter = new DrawerAdapter(MainActivity.this, domainDetailList);
+                    drawerAdapter = new SlidemenuAdapter(MainActivity.this, domainDetailList);
                     drawerList.setAdapter(drawerAdapter);
 
                     showItemList(domainDetailList.get(0).getId());
@@ -129,8 +130,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         itemAdapter = new ItemAdapter(this, itemViewList);
         recyclerView.setAdapter(itemAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
     }
 
     public void clickHomeButton(View view) {
@@ -140,10 +143,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickListViewButton(View view) {
         Toast.makeText(this, "List View", Toast.LENGTH_SHORT).show();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     public void clickGridViewButton(View view) {
         Toast.makeText(this, "Grid View", Toast.LENGTH_SHORT).show();
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
     }
 
     @Override

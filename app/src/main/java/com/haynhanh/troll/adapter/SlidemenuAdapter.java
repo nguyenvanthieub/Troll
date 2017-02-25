@@ -20,9 +20,9 @@ import com.squareup.picasso.Picasso;
  * Created by peter on 2/19/17.
  */
 
-public class DrawerAdapter extends ArrayAdapter<DomainDetail> {
+public class SlidemenuAdapter extends ArrayAdapter<DomainDetail> {
 
-    public DrawerAdapter(Context context, List<DomainDetail> objects) {
+    public SlidemenuAdapter(Context context, List<DomainDetail> objects) {
         super(context, 0, objects);
     }
 
@@ -31,7 +31,7 @@ public class DrawerAdapter extends ArrayAdapter<DomainDetail> {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         if (convertView == null)
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.drawer_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_slidemenu, parent, false);
 
         ImageView icon = (ImageView) convertView.findViewById(R.id.icon);
         TextView name = (TextView) convertView.findViewById(R.id.tv_name);
