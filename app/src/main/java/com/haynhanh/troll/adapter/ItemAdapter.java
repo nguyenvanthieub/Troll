@@ -16,13 +16,20 @@ import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(ItemView item);
+    }
+
+    private final OnItemClickListener listener;
+
     private List<ItemView> itemViewList;
     private Context context;
     private LayoutInflater mLayoutInflater;
 
-    public ItemAdapter(Context context, List<ItemView> datas) {
+    public ItemAdapter(Context context, List<ItemView> datas, OnItemClickListener listener) {
         this.context = context;
         itemViewList = datas;
+        this.listener = listener;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -34,9 +41,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(ItemAdapter.ItemViewHolder holder, int position) {
-        ItemView itemView = itemViewList.get(position);
-        holder.textView.setText(itemView.getName());
-        Picasso.with(context).load(itemView.getImage()).error(R.drawable.ic_troll_face).into(holder.imageView);
+        holder.bind(itemViewList.get(position), listener);
+//        ItemView itemView = itemViewList.get(position);
+//        holder.textView.setText(itemView.getName());
+//        Picasso.with(context).load(itemView.getImage()).error(R.drawable.ic_troll_face).into(holder.imageView);
     }
 
     @Override
@@ -44,7 +52,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         return itemViewList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView textView;
         private ImageView imageView;
 
@@ -53,5 +61,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             textView = (TextView) itemView.findViewById(R.id.textView);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
         }
+
+        public void bind(final ItemView item, final OnItemClickListener listener) {
+            textView.setText(item.getName());
+            Picasso.with(itemView.getContext()).load(item.getImage()).into(imageView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
+        }
+
     }
 }

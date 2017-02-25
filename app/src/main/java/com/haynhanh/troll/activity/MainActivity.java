@@ -1,5 +1,6 @@
 package com.haynhanh.troll.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -128,10 +129,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void showRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        itemAdapter = new ItemAdapter(this, itemViewList);
+
+        itemAdapter = new ItemAdapter(this, itemViewList, new ItemAdapter.OnItemClickListener() {
+            @Override public void onItemClick(ItemView itemView) {
+                Toast.makeText(MainActivity.this, "Mao " + itemView.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                startActivity(intent);
+            }
+        });
+
         recyclerView.setAdapter(itemAdapter);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
+
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
     }
