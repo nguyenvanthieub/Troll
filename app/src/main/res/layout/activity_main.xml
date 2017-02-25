@@ -19,6 +19,7 @@
             android:layout_height="50dp">
             <Button
                 android:text="Icon"
+                android:onClick="clickHomeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
             <TextView
@@ -35,11 +36,13 @@
             android:layout_height="50dp">
             <Button
                 android:layout_weight="1"
+                android:onClick="clickListViewButton"
                 android:text="List View"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
             <Button
                 android:layout_weight="1"
+                android:onClick="clickGridViewButton"
                 android:text="Grid View"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
