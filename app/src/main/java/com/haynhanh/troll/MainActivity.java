@@ -4,17 +4,23 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.haynhanh.troll.adapter.DrawerAdapter;
+import com.haynhanh.troll.adapter.ItemAdapter;
 import com.haynhanh.troll.model.domain.Domain;
 import com.haynhanh.troll.model.domain.DomainDetail;
 import com.haynhanh.troll.model.item.Item;
 import com.haynhanh.troll.model.item.ItemDetail;
+import com.haynhanh.troll.model.item.ItemView;
 import com.haynhanh.troll.network.ApiUtil;
 import com.haynhanh.troll.network.MyApi;
 import com.haynhanh.troll.network.NetworkHelper;
@@ -37,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
     private DrawerAdapter drawerAdapter;
     private List<DomainDetail> domainDetailList;
 
+    private RecyclerView recyclerView;
+    private ItemAdapter itemAdapter;
+    private List<ItemView> itemViewList;
+
+    private ImageView imageView;
+    private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
+                showItemList(domainDetailList.get(position).getId());
             }
         });
     }
@@ -70,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                     domainDetailList = response.body().getData();
                     drawerAdapter = new DrawerAdapter(MainActivity.this, domainDetailList);
                     drawerList.setAdapter(drawerAdapter);
+
+                    showItemList(domainDetailList.get(0).getId());
                 }
 
                 @Override
@@ -80,16 +96,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void clickHomeButton(View view) {
-        Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
-
-    public void clickListViewButton(View view) {
-        Toast.makeText(this, "List View", Toast.LENGTH_SHORT).show();
-
+    private void showItemList(int domain_id) {
         Map<String, Object> params = new HashMap<>();
-        params.put("domain_id", 1);
+        params.put("domain_id", domain_id);
         params.put("greater_id", 0);
         params.put("less_id", 1000);
         params.put("limit", 10);
@@ -98,11 +107,15 @@ public class MainActivity extends AppCompatActivity {
         api.getItemList(params).enqueue(new Callback<Item>() {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
-                Log.e("Mao", "Mao " + response.body().getData());
-                List<ItemDetail> itemDetailList = new ArrayList<ItemDetail>();
-                itemDetailList = response.body().getData();
-                Log.e("Mao", "Mao " + itemDetailList.get(0).getTitle());
-                Log.e("Mao", "Mao " + itemDetailList.get(0).getParts().get(0).getUrl());
+                List<ItemDetail> itemDetailList = response.body().getData();
+                itemViewList = new ArrayList<>();
+                for (int i = 0; i < itemDetailList.size(); i++) {
+                    String name  = itemDetailList.get(i).getTitle();
+                    String image = itemDetailList.get(i).getParts().get(0).getUrl();
+                    ItemView itemView = new ItemView(name, image);
+                    itemViewList.add(itemView);
+                }
+                showRecyclerView();
             }
 
             @Override
@@ -110,6 +123,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        itemAdapter = new ItemAdapter(this, itemViewList);
+        recyclerView.setAdapter(itemAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    public void clickHomeButton(View view) {
+        Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void clickListViewButton(View view) {
+        Toast.makeText(this, "List View", Toast.LENGTH_SHORT).show();
     }
 
     public void clickGridViewButton(View view) {
