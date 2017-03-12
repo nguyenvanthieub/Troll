@@ -8,15 +8,15 @@ import android.view.ViewGroup;
 
 import com.haynhanh.troll.R;
 
-public class PhpFragment extends Fragment {
+public class PhotoFragment extends Fragment {
 
-    public PhpFragment() {
+    public PhotoFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_php, container, false);
+        return inflater.inflate(R.layout.fragment_photo, container, false);
     }
 
 

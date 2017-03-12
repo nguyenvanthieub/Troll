@@ -4,48 +4,57 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.haynhanh.troll.fragment.AndroidFragment;
-import com.haynhanh.troll.fragment.IosFragment;
-import com.haynhanh.troll.fragment.PhpFragment;
+import com.haynhanh.troll.fragment.GifFragment;
+import com.haynhanh.troll.fragment.IframeFragment;
+import com.haynhanh.troll.fragment.PhotoFragment;
+import com.haynhanh.troll.fragment.YoutubeFragment;
 
 public class PagerAdapter  extends FragmentStatePagerAdapter {
+
     public PagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
-
-        Fragment frag=null;
+        Fragment frag = null;
         switch (position){
             case 0:
-                frag = new AndroidFragment();
+                frag = new GifFragment();
                 break;
             case 1:
-                frag = new IosFragment();
+                frag = new IframeFragment();
                 break;
             case 2:
-                frag = new PhpFragment();
+                frag = new PhotoFragment();
+                break;
+            case 3:
+                frag = new YoutubeFragment();
                 break;
         }
         return frag;
     }
+
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
+
     @Override
     public CharSequence getPageTitle(int position) {
         String title = "";
         switch (position){
             case 0:
-                title="Android";
+                title = "Gif";
                 break;
             case 1:
-                title="IOS";
+                title = "iFrame";
                 break;
             case 2:
-                title="PHP";
+                title = "Photo";
+                break;
+            case 3:
+                title = "Youtube";
                 break;
         }
 

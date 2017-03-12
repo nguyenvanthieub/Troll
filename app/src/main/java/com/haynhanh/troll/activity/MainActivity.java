@@ -16,8 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.haynhanh.troll.R;
-import com.haynhanh.troll.adapter.SlidemenuAdapter;
 import com.haynhanh.troll.adapter.ItemAdapter;
+import com.haynhanh.troll.adapter.SlidemenuAdapter;
 import com.haynhanh.troll.model.domain.Domain;
 import com.haynhanh.troll.model.domain.DomainDetail;
 import com.haynhanh.troll.model.item.Item;
@@ -27,6 +27,7 @@ import com.haynhanh.troll.network.ApiUtil;
 import com.haynhanh.troll.network.MyApi;
 import com.haynhanh.troll.network.NetworkHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Mao " + domainDetailList.get(position).getName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Mao " + domainDetailList.get(position).getName(), Toast.LENGTH_SHORT).show();
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
@@ -91,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<Domain> call, Throwable t) {}
+                public void onFailure(Call<Domain> call, Throwable t) {
+                }
             });
         } else {
             Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
@@ -101,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
     private void showItemList(int domain_id) {
         Map<String, Object> params = new HashMap<>();
         params.put("domain_id", domain_id);
-        params.put("greater_id", 0);
-        params.put("less_id", 1000);
-        params.put("limit", 10);
-        params.put("mid_id", 2);
+//        params.put("greater_id", 0);
+//        params.put("less_id", 1000);
+//        params.put("limit", 10);
+//        params.put("mid_id", 2);
         api = ApiUtil.getApi();
         api.getItemList(params).enqueue(new Callback<Item>() {
             @Override
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 List<ItemDetail> itemDetailList = response.body().getData();
                 itemViewList = new ArrayList<>();
                 for (int i = 0; i < itemDetailList.size(); i++) {
-                    String name  = itemDetailList.get(i).getTitle();
+                    String name = itemDetailList.get(i).getTitle();
                     String image = itemDetailList.get(i).getParts().get(0).getUrl();
                     ItemView itemView = new ItemView(name, image);
                     itemViewList.add(itemView);
@@ -131,9 +133,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         itemAdapter = new ItemAdapter(this, itemViewList, new ItemAdapter.OnItemClickListener() {
-            @Override public void onItemClick(ItemView itemView) {
-                Toast.makeText(MainActivity.this, "Mao " + itemView.getName(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+            @Override
+            public void onItemClick(ItemView itemView) {
+//                Toast.makeText(MainActivity.this, "Mao " + itemView.getName(), Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, SimpleDetailActivity.class);
+                intent.putExtra("item", (Serializable) itemView);
                 startActivity(intent);
             }
         });

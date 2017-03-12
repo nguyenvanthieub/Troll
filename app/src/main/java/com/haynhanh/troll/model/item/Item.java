@@ -1,12 +1,13 @@
 package com.haynhanh.troll.model.item;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by thieumao on 2/25/17.
  */
 
-public class Item {
+public class Item implements Serializable {
 
     private Integer status;
     private String message;

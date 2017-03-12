@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9dd488"
-    tools:context="com.haynhanh.troll.fragment.PhpFragment">
+    android:background="#a973b6"
+    tools:context="com.haynhanh.troll.fragment.YoutubeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="PHP Fragment" />
+        android:text="Youtube" />
 
 </FrameLayout>
